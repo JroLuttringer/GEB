@@ -1,3 +1,13 @@
+"""
+The married functions are often different at first
+i.e., at the begin, when x is small, f[x] and m[x] do not return the same value 
+as time goes on and x increases, f and m return the same value for longer periods of time 
+
+In fact, the number of time they are equal to each other before diverging follows the fibonacci sequence 
+f and m returns the same result 1 times before not having the same result, than 1 , than 2, than 3, than 5, than 8 ....
+"""
+
+
 depth = 100
 
 _f = []
