@@ -13,6 +13,8 @@ Said in another fashion, F & M differ at iteration 0, 1, 2, 4, 7, 12
 7-4 = 3
 12-7 = 5
 
+Said in ANOTHER way, F[n] != M[n] if n+1 is in the fibonacci sequence
+
 """
 
 
