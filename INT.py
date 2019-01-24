@@ -1,24 +1,24 @@
 """
-INT(x), though not explained thoroughly in the book, stands for "interchanged" 
+INT(x), though not explained thoroughly in the book, stands for "interchanged"
 and "has to do with eta sequence
 More can be found in the paper (ETA-LORE) https://oeis.org/A006336/a006336_1.pdf
 
-This function, whose graphic representation is very peculiar, 
+This function, whose graphic representation is very peculiar,
 uses the concept of VS sequence and VC sequence of a number
 VC: Vertical Coun and Vertical Sep-sequences or an eta-sequence
 
 The nth term of VC is the coun of the nth derivative of eta(alpha),
 and the nth term os VS is the sep of the nth derivative of eta(alpha)
 
-The sequences this papers present are infinite sequence composer of 
+The sequences this papers present are infinite sequence composer of
 a finit number of intergers (e.g. 1221121212221....)
 
-This sequences are composer of finite chunks, that will appear in the sequence 
-an infinite number of times 
-If this chunk are identified by an integer, the "meta-sequence", composed of the 
-identifiers of the chunk of the sequence in order, is called the derivative 
+This sequences are composer of finite chunks, that will appear in the sequence
+an infinite number of times
+If this chunk are identified by an integer, the "meta-sequence", composed of the
+identifiers of the chunk of the sequence in order, is called the derivative
 of the og sequence (!= calculus derivative)
-Eta-sequence can be infinitely differentiable sequences: the derivate of an 
+Eta-sequence can be infinitely differentiable sequences: the derivate of an
 eta-sequence is another eta-sequence!
 Eta-sequences are composed of only two consecutive integers
 
@@ -30,35 +30,35 @@ Example:
 eta_k (alpha) = [(k-1) alpha]] - [k alpha]
 if alpha is pi, eta(alpha) is composed of 3's and 4's
 3333334333333343333334
- => to forme the derivative, we need to give integer-names to the chunks 
+ => to forme the derivative, we need to give integer-names to the chunks
 we can either count the number of 3's in a chunk, or the length of the chunk
 
 Hence the word "coun" : here the 3's, and 'sep' (separator) , here 4's
-In genral, the coun will be the closest integer to alpha 
+In genral, the coun will be the closest integer to alpha
 
 Comming back to the definition:
 INT(x) = y, where VC(x) = VS(y) and VS(x) = VC(y),
 where the nth elemnt of VC is the coun of the nth derivative of eta(x),
 and the nth element of VS is the sep of the nth derivate of eta(x)
 
-The recursion in INT(), which can be seen in its graph, resides in this 
+The recursion in INT(), which can be seen in its graph, resides in this
 definition:
 	INT(alpha) = INT(alpha-N) + N, where N is the integer part of alpha
 Thanks to this definition, we can pretty much ignore all the stuff that was said
 before; but there is still one problem: This definition is cyclic, not recursive.
 We need to define a value which allow the recursion to "bottom out".
 
-In other words, you need to shift alpha in the relevant region of the x-axis 
+In other words, you need to shift alpha in the relevant region of the x-axis
 , that pop in back into the correct part of the y axis, which can be translated as:
 INT(alpha) = g(INT(f(alpha)))
-where f "shrinks" alpha to the part of the graph you have to look at, and 
+where f "shrinks" alpha to the part of the graph you have to look at, and
 g "expands" it back where it belongs.
 According to the proof of the paper, f(x) = 1/X, and g(x) = 1/(1-x)
 
-The "box" between N and N+1 is mapped onto a subgraph 
+The "box" between N and N+1 is mapped onto a subgraph
 located between 1/N and 1/N+1
 
-Note: this definition only works for alpha > 1, else the integer part 
+Note: this definition only works for alpha > 1, else the integer part
 of alpha = 0, thus INT(alpha) = INT(alpha)
 BUT all the information needed are between x=0 and x=1: all the others
 value are copies of that box
@@ -81,7 +81,7 @@ the # of D is equal to n
 import math
 import itertools
 
-depth = 30
+depth = 15
 phi = (1+math.sqrt(5))/2
 
 
@@ -100,7 +100,7 @@ def eta(alpha):
 		return mx,mn
 	else:
 		return mn,mx
-		
+
 
 def D(a):
 	sep,coun = eta(a)
@@ -151,12 +151,16 @@ print(tests2)
 
 all_vc = {}
 all_vs = {}
+all_vc[phi] = phic
+all_vc[math.sqrt(2)] = rootc
+all_vs[math.sqrt(2)] = roots
+all_vc[phi] = phis
 
 hashes_vc = {}
 hashes_vs = {}
 
 with open("test", 'w') as f:
-	
+
 	i = 0.3
 	while i < 0.7:
 		#print(i)
@@ -166,8 +170,8 @@ with open("test", 'w') as f:
 			continue
 		all_vc[i]=vc
 		all_vs[i]=vs
-		hashes_vs[i] = hash(set(vs))
-		hashes_vc[i] = hash(set(vc))
+		hashes_vc[i] = sum(vc)
+		hashes_vs[i] = sum(vs)
 		i += 0.000001
 
 
@@ -180,20 +184,27 @@ def lst_eq(a,b):
 print(all_vc)
 print(all_vs)
 
+print(hashes_vc)
+print(hashes_vs)
+
 print("Comparison")
 for x in hashes_vc.keys():
 	found = False
 	for y in reversed(list(hashes_vs.keys())):
-		if hashes_vc[x] == hashes_vs[y] and hashes_vs[x] == hasehs_vc[y]:
-			print("wow")
+		if hashes_vc[x] == hashes_vs[y] and hashes_vs[x] == hashes_vc[y]:
+			if lst_eq(all_vc[x], all_vs[y]) and lst_eq(all_vc[y], all_vs[x]):
+				print("{},{}".format(x,y))
+				print("{},{}".format(y,x))
 
 
 
-for x in all_vc.keys():
-	found = False
-	for y in reversed(list(all_vs.keys())):
-		if lst_eq(all_vc[x],all_vs[y]):
-			print("{},{}".format(x,y))
-			found = True
-		if found:
-			break
+
+#for x in all_vc.keys():
+#	found = False
+#	for y in reversed(list(all_vs.keys())):
+#		if lst_eq(all_vc[x],all_vs[y]):
+#			print("{},{}".format(x,y))
+#			found = True
+#		if found:
+#			break
+#
